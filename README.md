@@ -1,7 +1,7 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tgrandjean/OC-seattle-energy/master)
+
 seattle_energy
 ==============================
-
-french version below:
 
 **Educational purpose** project in data sciences.
 
@@ -24,8 +24,7 @@ Usage:
       * Go to binder !
       * Open a terminal when the server is ready.
       * Type `make data` and press enter. This will download and extract the data that are needed for analyze.
-      * Then, go to notebooks and open `academy_explo.ipynb`
-
+      * Then, go to notebooks and open `[The notebook you want to run].ipynb`
 
 
 Project Organization
