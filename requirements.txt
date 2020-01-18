@@ -15,3 +15,7 @@ tqdm
 kaggle
 ipython
 ipykernel
+tabulate
+scipy
+statsmodels
+researchpy
