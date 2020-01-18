@@ -6,9 +6,7 @@ Thibault Grandjean
 """
 from IPython.display import display
 import matplotlib.pyplot as plt
-import scipy.stats as stats
 import seaborn as sns
-import researchpy as rp
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
 
@@ -31,16 +29,19 @@ class BivariateAnalysis(UnivariateAnalysis):
         display(aov_table)
         return results, aov_table
 
-    def boxplot(self, x, y, figsize=(12, 8), label_rotation=45):
+    def boxplot(self, x, y, figsize=(12, 8),
+                label_rotation=45, orient='v'):
         fig, ax = plt.subplots(1, figsize=figsize)
-        g = sns.catplot(x=x,
+        if orient == 'h':
+            x, y = y, x
+        _ = sns.catplot(x=x,
                         y=y,
+                        orient=orient,
                         kind="box",
                         data=self.data, ax=ax)
         plt.close(2)
         plt.xticks(rotation=label_rotation)
         plt.show()
-
 
     def scatterplot(self, variables):
         sns.jointplot(x=variables[0],
