@@ -3,6 +3,8 @@
 seattle_energy
 ==============================
 
+![logo-seattle](./reports/figures/logo-seattle.png)
+
 **Educational purpose** project in data sciences.
 
 predict the energy consumption of buildings in the city of Seattle
@@ -77,5 +79,9 @@ Project Organization
 
 
 --------
+
+--------
+
+data source : [Kaggle](https://www.kaggle.com/city-of-seattle/sea-building-energy-benchmarking)
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
