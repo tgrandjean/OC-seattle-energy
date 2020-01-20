@@ -34,6 +34,10 @@ class UnivariateAnalysis(object):
             raise ValueError("You must pass a pandas's dataframe.")
         self._data = dataframe
 
+    def get_missing(self, column):
+        """Return a dataframe with missing value in the `column`."""
+        return self.data[self.data[column].isna()]
+
     def completion_rate(self, column):
         """return completion rate for a column."""
         complete = self.data[column].dropna().shape[0] \
@@ -71,13 +75,15 @@ class UnivariateAnalysis(object):
         ax_box.set(xlabel='')
         plt.show()
 
-    def make_analysis(self, column):
+    def make_analysis(self, column, **kwargs):
         """Make full analysis."""
         print(self.completion_rate(column))
         if self.data[column].dtype.name in ['int64', 'float64']:
             tab = tabulate(self.series_stats(column), tablefmt="html")
             display(HTML(tab))
             self.graph_series(column)
+        elif self.data[column].dtype.name == 'category':
+            self.categorical_analysis(column=column, **kwargs)
         else:
             raise NotImplementedError('This feature will be available soon.')
 
@@ -88,3 +94,12 @@ class UnivariateAnalysis(object):
         upper = self.data[self.data[column] >
                           self.data[column].quantile(upper_trig)].copy()
         return lower, upper
+
+    def categorical_analysis(self, column, **kwargs):
+        """Perform statistical analysis on categorical variable."""
+        if kwargs.get('orient') == 'h':
+            kwargs['y'] = column
+        else:
+            kwargs['x'] = column
+        fig, ax = plt.subplots(1, figsize=kwargs.pop('figsize', (8, 8)))
+        sns.countplot(data=self.data, ax=ax, **kwargs)
