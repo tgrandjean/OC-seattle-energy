@@ -74,9 +74,12 @@ class UnivariateAnalysis(object):
     def make_analysis(self, column):
         """Make full analysis."""
         print(self.completion_rate(column))
-        tab = tabulate(self.series_stats(column), tablefmt="html")
-        display(HTML(tab))
-        self.graph_series(column)
+        if self.data[column].dtype.name in ['int64', 'float64']:
+            tab = tabulate(self.series_stats(column), tablefmt="html")
+            display(HTML(tab))
+            self.graph_series(column)
+        else:
+            raise NotImplementedError('This feature will be available soon.')
 
     def outliers_infos(self, column, lower_trig=0.05, upper_trig=0.95):
         """Return informations for values out of range of quantiles."""
