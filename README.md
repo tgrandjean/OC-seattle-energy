@@ -18,14 +18,14 @@ Usage:
         virtualenv env
         source env/bin/activate
         pip install -r requirements.txt
-        ipython kernel install --user --name=academy
-        make data
+        ipython kernel install --user --name=seattle_energy
+        make data (this will work only if you have an API access to Kaggle)
         jupyter lab
         ```
    * Remote :
       * Go to binder !
-      * Open a terminal when the server is ready.
-      * Type `make data` and press enter. This will download and extract the data that are needed for analyze.
+      * Create a `data\raw` directory at the root of working directory.
+      * load the data in the `data\raw` directory.
       * Then, go to notebooks and open `[The notebook you want to run].ipynb`
 
 

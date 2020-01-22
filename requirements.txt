@@ -21,3 +21,4 @@ statsmodels
 researchpy
 sklearn
 ipywidgets
+pandas-profiling
