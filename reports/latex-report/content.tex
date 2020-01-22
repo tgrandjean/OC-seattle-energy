@@ -1,0 +1,96 @@
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+
+%------------------------------------------------
+
+\section{Données disponibles}
+
+\subsection{généralités}
+
+Les données sont disponibles gratuitement sur le site de la ville de seattle et
+également sur la plateforme "Kaggle".
+
+Le jeu de données contient deux fichiers :
+\begin{itemize}
+  \item{2015-building-energy-benchmarking.csv}
+  \item{2016-building-energy-benchmarking.csv}
+\end{itemize}
+
+Les deux jeux de données contiennent essentiellement les mêmes variables mais
+certaines (Par exemple : la localisation) sont encodées différemment.
+
+\subsection{Notes}
+
+Les seules différences notables entre les deux jeux de données sont:
+\begin{itemize}
+  \item{Le jeu de 2016 contient 36 observations de plus que celui de 2015.}
+  \item{Les données de 2016 n'ont pas la variable "OtherFuelUse"}
+  \item{Les données de 2015 contiennent une variable "Location" contenant les
+       informations suivantes}
+  \begin{itemize}
+    \item{City}
+    \item{State}
+    \item{ZipCode}
+    \item{Address}
+    \item{Latitude et longitude}
+  \end{itemize}
+  \item{Les colonnes suivantes ont été renommées}
+  \begin{itemize}
+    \item{Comment : comments}
+    \item{GHGEmissions(MetricTonsCO2e) : TotalGHGEmissions}
+    \item{GHGEmissionsIntensity(kgCO2e/ft2) : GHGEmissionsIntensity}
+  \end{itemize}
+\end{itemize}
+
+%------------------------------------------------
+
+\section{Analyse exploratoire des données}
+
+\subsection{Travail préliminaire sur les données}
+
+Les deux jeux de données sont uniformisés au niveau des variables
+(la colonne "Location" du jeu de données de 2015 est transformée en colonnes
+"Address", "ZipCode", "Latitude", "Longitude", ...) puis aggrégés pour former
+un jeu unique contenant 47 variables et 6716 observations.
+
+On a donc les variables suivantes :
+  voir table \ref{tab:table-variables}
+
+\begin{table}[]
+  \caption{liste des variables}
+  \label{tab:table-variables}
+\input{./includes/variables.tex}
+\end{table}
+
+\subsection{Analyse des variables}
+Un rapport d'analyse exploratoire a été généré à l'aide de la bibliothèque pandas-profiling.
+Le rapport est disponible à l'adresse :
+\href{https://tgrandjean-oc-reports.s3.eu-west-3.amazonaws.com/seattle-energy/profiling_report.html}{AWS S3 bucket}
+%------------------------------------------------
+
+\section{Modèle}
+
+\subsection{Données d'entrée (input)}
+
+\subsection{Données de sortie (output)}
+
+\subsection{Algorithme utilisé}
+
+\subsection{Entrainement du modèle}
+
+
+%------------------------------------------------
+
+\section{Résultats}
+
+
+%------------------------------------------------
+
+\section{Conclusion}
+
+
+%------------------------------------------------
