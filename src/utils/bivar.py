@@ -16,7 +16,7 @@ from statsmodels.formula.api import ols
 from scipy import stats
 from tabulate import tabulate
 
-from src.features.univar import UnivariateAnalysis
+from src.utils.univar import UnivariateAnalysis
 
 
 def background_gradient(s, m, M, cmap='PuBu', low=0, high=0):
@@ -85,7 +85,7 @@ class BivariateAnalysis(UnivariateAnalysis):
         return results
 
     def chi_square_contingency(self, variables):
-        """Make a Chi square analysis between to categorical variables."""
+        """Make a Chi square analysis between two categorical variables."""
         cont = pd.crosstab(self.data[variables[0]],
                            self.data[variables[1]])
         print('Contingency table')
