@@ -6,6 +6,7 @@ from abc import ABC
 import logging
 
 import pandas as pd
+from sklearn import preprocessing
 
 logger = logging.getLogger(__name__)
 
@@ -13,12 +14,13 @@ class AbstractPipeline(ABC):
     """AbstractPipeline,
 
     Parent class for data pipeline.
-
     """
 
-    def __init__(self, raw_data):
+    def __init__(self, raw_data, input_, target):
         logger.debug("Initializing DataPipeline")
         self.data = raw_data
+        self.input = input_
+        self.target = target
         logger.debug("Initialized DataPipeline")
 
     @property
@@ -46,17 +48,19 @@ class AbstractPipeline(ABC):
         elif type(column) == str:
             if column not in self.data.columns:
                 raise IndexError("Invalid column name %s" % column)
+                column = [column]
         elif type(column) == list:
             for elt in column:
                 if elt not in self.data.columns:
                     raise IndexError('Invalid target name %s' % elt)
-        return column
+        return column  # type(column) == list
 
     @property
     def target(self):
         """Get or set target variable **y** of the model.
 
-        target (str or list): string or list of target variables.
+        target (str or list): string or list of target variables converted
+        in list (if string, that will give us a one item list.).
 
         :note:
             must be present in self.data.columns
@@ -79,8 +83,8 @@ class AbstractPipeline(ABC):
         return self._input
 
     @input.setter
-    def input(self, input):
-        self._input = self._column_validator(input)
+    def input(self, input_):
+        self._input = self._column_validator(input_)
 
     def process(self):
         """process the pipeline.
@@ -90,6 +94,25 @@ class AbstractPipeline(ABC):
         """
         raise NotImplementedError("Override this method.")
 
+    @property
+    def y(self):
+        """Get y (canonical target data for modeling)."""
+        return self._y.values
+
+    @property
+    def X(self):
+        """Get X (canonical input data for modeling)."""
+        return self._X.values
+
+    @X.setter
+    def X(self, dataframe):
+        assert set(list(dataframe.columns.values)) == set(self.input)
+        self._X = dataframe
+
+    @y.setter
+    def y(self, dataframe):
+        assert set(list(dataframe.columns.values)) == set(self.target)
+        self._y = dataframe
 
 class ProcessingPipeline(AbstractPipeline):
     """Data processing pipeline.
@@ -101,6 +124,70 @@ class ProcessingPipeline(AbstractPipeline):
     """
 
     def process(self):
-        pass
+        self.handle_missing_values()
+        self.scale_numerical_data()
+        self.X = self._scaled_data[self.input]
+        self.y = self._scaled_data[self.target]
+        self.encode_categorical_data()
 
-    def
+    def scale_numerical_data(self):
+        """scale numerical data for modeling
+
+        :note:
+            see the scikit doc:
+            https://scikit-learn.org/stable/auto_examples/preprocessing/
+            plot_all_scaling.html#sphx-glr-auto-examples-preprocessing-
+            plot-all-scaling-py
+
+        """
+        logger.info("Scaling numerical data between -1 and 1.")
+        self._scaled_data = self.data.copy()
+        self._scalers = dict()
+        for col in self._scaled_data.columns:
+            if col not in self.input and col not in self.target:
+                self._scaled_data.drop(col, axis=1, inplace=True)
+
+        for col in self._scaled_data.columns:
+            logger.debug("scaling %s", col)
+            if self.data[col].dtype in [float, int]:
+                x = self._scaled_data[col].values.reshape(-1, 1)
+                self._scalers[col] = preprocessing.StandardScaler().fit(x)
+                self._scaled_data.loc[:, col] = self._scalers[col].transform(x)
+                min_ = self._scaled_data[col].min()
+                max_ = self._scaled_data[col].max()
+            else:
+                print(f"ignoring {col}, dtype {self.data[col].dtype.name}")
+
+    def encode_categorical_data(self):
+        for col in self._X.columns:
+            if self._X[col].dtype.name == 'category':
+                self._X = pd.concat([self._X,
+                                     pd.get_dummies(self._X[col],
+                                                    prefix=col,
+                                                    dummy_na=True)],
+                                        axis=1)
+                self._X.drop(col, axis=1, inplace=True)
+
+    def handle_missing_values(self):
+        """Handle missing value :
+
+        missing observations in target are droped and missing values
+        in input are imputed to zero.
+        """
+        for col in self.target:
+            print(col)
+            self.data = self.data[self.data[col].notnull()]
+        for col in self.input:
+            print(col)
+            if self.data[col].dtype.name == "category":
+                print(f"ignoring {col}: categorical data")
+            else:
+                self.data.loc[self.data[col].isnull(), col] = 0
+
+    @property
+    def scaled_data(self):
+        return self._scaled_data
+
+    @property
+    def scalers(self):
+        return self._scalers
