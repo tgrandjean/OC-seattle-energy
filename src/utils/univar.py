@@ -82,18 +82,28 @@ class UnivariateAnalysis(object):
             tab = tabulate(self.series_stats(column), tablefmt="html")
             display(HTML(tab))
             self.graph_series(column)
+            display(self.outliers(column))
+            self.data = self.data_without_outliers(column)
+            self.graph_series(column)
+
         elif self.data[column].dtype.name == 'category':
             self.categorical_analysis(column=column, **kwargs)
         else:
             raise NotImplementedError('This feature will be available soon.')
 
-    def outliers_infos(self, column, lower_trig=0.05, upper_trig=0.95):
-        """Return informations for values out of range of quantiles."""
-        lower = self.data[self.data[column] <
-                          self.data[column].quantile(lower_trig)].copy()
-        upper = self.data[self.data[column] >
-                          self.data[column].quantile(upper_trig)].copy()
-        return lower, upper
+    def outliers(self, column):
+        """Return outliers."""
+        quartile_1 = self.data[column].quantile(0.25)
+        quartile_3 = self.data[column].quantile(0.75)
+        iqr = quartile_3 - quartile_1
+        lower_bound = quartile_1 - (iqr * 1.5)
+        upper_bound = quartile_3 + (iqr * 1.5)
+        return self.data[(self.data[column] < lower_bound) |
+                         (self.data[column] > upper_bound)]
+
+    def data_without_outliers(self, column):
+        """Return data without outliers."""
+        return self.data.drop(self.outliers(column).index)
 
     def categorical_analysis(self, column, **kwargs):
         """Perform statistical analysis on categorical variable."""
