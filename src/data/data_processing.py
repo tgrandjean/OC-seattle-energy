@@ -34,6 +34,24 @@ class AbstractPipeline(ABC):
             raise ValueError("You should pass a pandas dataframe obj.")
         self._data = data
 
+    def _column_validator(self, column):
+        """Assert that a column or list of columns are in self.data
+
+        :args:
+            column (str or list of str) : string or list of string to validate
+        """
+        if type(column) != str and type(column) != list:
+            raise ValueError('Incorrect type must be a string'
+                             ' or list of string')
+        elif type(column) == str:
+            if column not in self.data.columns:
+                raise IndexError("Invalid column name %s" % column)
+        elif type(column) == list:
+            for elt in column:
+                if elt not in self.data.columns:
+                    raise IndexError('Invalid target name %s' % elt)
+        return column
+
     @property
     def target(self):
         """Get or set target variable **y** of the model.
@@ -47,16 +65,22 @@ class AbstractPipeline(ABC):
 
     @target.setter
     def target(self, target):
-        if type(target) != str and type(target) != list:
-            raise ValueError('Incorrect type for target')
-        elif type(target) == str:
-            if target not in self.data.columns:
-                raise IndexError("Invalid target name %s" % target)
-        elif type(target) == list:
-            for elt in target:
-                if elt not in self.data.columns:
-                    raise IndexError('Invalid target name %s' % elt)
-        self._target = target
+        self._target = self._column_validator(target)
+
+    @property
+    def input(self):
+        """Get or set input variable **X** of the model.
+
+        input (str or list): string or list of input variables.
+
+        :note:
+            must be present in self.data.columns
+        """
+        return self._input
+
+    @input.setter
+    def input(self, input):
+        self._input = self._column_validator(input)
 
     def process(self):
         """process the pipeline.
@@ -78,3 +102,5 @@ class ProcessingPipeline(AbstractPipeline):
 
     def process(self):
         pass
+
+    def
