@@ -23,19 +23,6 @@ class AbstractPipeline(ABC):
         self.target = target
         logger.debug("Initialized DataPipeline")
 
-    @property
-    def data(self):
-        """Get or set the current data set.
-        Data should be a pandas DafaFrame object.
-        """
-        return self._data
-
-    @data.setter
-    def data(self, data):
-        if type(data) != pd.DataFrame:
-            raise ValueError("You should pass a pandas dataframe obj.")
-        self._data = data
-
     def _column_validator(self, column):
         """Assert that a column or list of columns are in self.data
 
@@ -54,6 +41,19 @@ class AbstractPipeline(ABC):
                 if elt not in self.data.columns:
                     raise IndexError('Invalid target name %s' % elt)
         return column  # type(column) == list
+
+    @property
+    def data(self):
+        """Get or set the current data set.
+        Data must be a pandas DafaFrame object.
+        """
+        return self._data
+
+    @data.setter
+    def data(self, data):
+        if type(data) != pd.DataFrame:
+            raise ValueError("You should pass a pandas dataframe obj.")
+        self._data = data
 
     @property
     def target(self):
@@ -86,14 +86,6 @@ class AbstractPipeline(ABC):
     def input(self, input_):
         self._input = self._column_validator(input_)
 
-    def process(self):
-        """process the pipeline.
-
-        Top level api method.
-        Execute this method to run the pipeline.
-        """
-        raise NotImplementedError("Override this method.")
-
     @property
     def y(self):
         """Get y (canonical target data for modeling)."""
@@ -113,6 +105,14 @@ class AbstractPipeline(ABC):
     def y(self, dataframe):
         assert set(list(dataframe.columns.values)) == set(self.target)
         self._y = dataframe
+
+    def process(self):
+        """process the pipeline.
+
+        Top level api method.
+        Execute this method to run the pipeline.
+        """
+        raise NotImplementedError("Override this method.")
 
 class ProcessingPipeline(AbstractPipeline):
     """Data processing pipeline.
