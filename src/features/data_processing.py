@@ -10,6 +10,7 @@ from sklearn import preprocessing
 
 logger = logging.getLogger(__name__)
 
+
 class AbstractPipeline(ABC):
     """AbstractPipeline,
 
@@ -35,7 +36,7 @@ class AbstractPipeline(ABC):
         elif type(column) == str:
             if column not in self.data.columns:
                 raise IndexError("Invalid column name %s" % column)
-                column = [column]
+            column = [column]
         elif type(column) == list:
             for elt in column:
                 if elt not in self.data.columns:
@@ -114,6 +115,7 @@ class AbstractPipeline(ABC):
         """
         raise NotImplementedError("Override this method.")
 
+
 class ProcessingPipeline(AbstractPipeline):
     """Data processing pipeline.
 
@@ -122,6 +124,10 @@ class ProcessingPipeline(AbstractPipeline):
         >>                      'y': np.arange(10)})
         >> pipeline = ProcessingPipeline(data)
     """
+
+    def __init__(self, raw_data, input_, target):
+        super().__init__(raw_data, input_, target)
+        self.process()
 
     def process(self):
         self.handle_missing_values()
