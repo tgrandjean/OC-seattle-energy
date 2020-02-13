@@ -3,6 +3,7 @@
 Define here an abstract class for model.
 """
 from abc import ABC
+import pickle
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -32,6 +33,7 @@ class AbstractModel(ABC):
             clf.fit(self.X, self.y)
             self._clf = clf
             self.model = clf.best_estimator_.set_params(**clf.best_params_)
+            print(f'Best params {clf.best_params_}')
         else:
             self.model.fit(self.X, self.y)
 
@@ -78,7 +80,6 @@ class AbstractModel(ABC):
                     coef_ = coef_.reshape(self.X[0].shape, )
                 coeffs.append(coef_)
             self.model = self.model.set_params(**self._clf.best_params_)
-            print(self.model.coef_.shape)
             ax[0].plot(values, coeffs)
             ax[0].set_xscale('log')
             ax[1].plot(values, - self._optimization_results['mean_test_score'])
@@ -93,3 +94,7 @@ class AbstractModel(ABC):
             ax[0].set_ylabel('Coeff')
             plt.xlabel(param)
             plt.show()
+
+    def save(self, path):
+        with open(path, 'wb') as f:
+            pickle.Pickler(f).dump(self)
