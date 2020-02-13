@@ -59,10 +59,9 @@ class BivariateAnalysis(UnivariateAnalysis):
         fig, ax = plt.subplots(1, figsize=figsize)
         if orient == 'h':
             x, y = y, x
-        _ = sns.catplot(x=x,
+        _ = sns.boxplot(x=x,
                         y=y,
                         orient=orient,
-                        kind="box",
                         data=self.data, ax=ax)
         plt.close(2)
         plt.xticks(rotation=label_rotation)
