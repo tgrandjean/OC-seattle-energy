@@ -25,7 +25,8 @@ model_target = ['SiteEnergyUseWN_kBtu']
 
 class ModelTrainer(object):
 
-    def __init__(self, data, models_path=MODELS_PATH):
+    def __init__(self, data, models_path=MODELS_PATH,
+                 model_inputs=model_inputs, model_target=model_target):
         self.data = data
         self.models = self._get_models(models_path)
         self.processing_data = ProcessingPipeline(self.data,
@@ -52,10 +53,20 @@ class ModelTrainer(object):
             self.trained_models.append(m)
 
     def score_models(self, X, y):
+        rmse_list = []
         if not self.trained_models:
             self.train_models()
 
         for model in self.trained_models:
-            rmse = np.sqrt(metrics.mean_squared_error(y, model.predict(X)))
+            scaler = self.processing_data.scalers[model_target[0]]
+            y_pred = scaler.inverse_transform(model.predict(X))
+            y_true = scaler.inverse_transform(y)
+            rmse = np.sqrt(metrics.mean_squared_error(y_true, y_pred))
+            rmse_list.append(rmse)
             print(f"RMSE {model} : {rmse}")
-            print(f'Score {model} : {1 - rmse}')
+
+        return rmse_list
+
+    def get_best_model(self, X, y):
+        best_index = np.argmin(self.score_models(X, y))
+        return self.trained_models[best_index]
