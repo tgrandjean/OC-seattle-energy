@@ -6,6 +6,7 @@ from abc import ABC
 import logging
 
 import pandas as pd
+import missingno as msno
 from sklearn import preprocessing
 
 logger = logging.getLogger(__name__)
@@ -130,6 +131,10 @@ class ProcessingPipeline(AbstractPipeline):
         self.process()
 
     def process(self):
+        """Process pipeline.
+
+        Top level API method to run the pipeline
+        """
         self.handle_missing_values()
         self.scale_numerical_data()
         self.X = self._scaled_data[self.input]
@@ -146,25 +151,27 @@ class ProcessingPipeline(AbstractPipeline):
             plot-all-scaling-py
 
         """
-        logger.info("Scaling numerical data between -1 and 1.")
+        logger.info("Scaling numerical data.")
         self._scaled_data = self.data.copy()
         self._scalers = dict()
         for col in self._scaled_data.columns:
             if col not in self.input and col not in self.target:
                 self._scaled_data.drop(col, axis=1, inplace=True)
 
-        for col in self._scaled_data.columns:
+        for col in ['PropertyGFATotal']:
             logger.debug("scaling %s", col)
             if self.data[col].dtype in [float, int]:
                 x = self._scaled_data[col].values.reshape(-1, 1)
                 self._scalers[col] = preprocessing.StandardScaler().fit(x)
                 self._scaled_data.loc[:, col] = self._scalers[col].transform(x)
-                min_ = self._scaled_data[col].min()
-                max_ = self._scaled_data[col].max()
             else:
                 print(f"ignoring {col}, dtype {self.data[col].dtype.name}")
 
     def encode_categorical_data(self):
+        """encode categorical data.
+
+        One Hot Encoding of categorical variables.
+        """
         for col in self._X.columns:
             if self._X[col].dtype.name == 'category':
                 self._X = pd.concat([self._X,
