@@ -7,7 +7,7 @@ from sklearn.linear_model import Lasso
 
 from src.models.model import AbstractModel
 
-ALPHAS = alpha=np.logspace(-4, -1, num=100)
+ALPHAS = alpha=np.logspace(3, 6, num=100)
 
 
 class Model(AbstractModel):

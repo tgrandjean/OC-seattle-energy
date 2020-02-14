@@ -6,6 +6,7 @@ from abc import ABC
 import logging
 
 import pandas as pd
+import missingno as msno
 from sklearn import preprocessing
 
 logger = logging.getLogger(__name__)
@@ -157,7 +158,7 @@ class ProcessingPipeline(AbstractPipeline):
             if col not in self.input and col not in self.target:
                 self._scaled_data.drop(col, axis=1, inplace=True)
 
-        for col in self._scaled_data.columns:
+        for col in ['PropertyGFATotal']:
             logger.debug("scaling %s", col)
             if self.data[col].dtype in [float, int]:
                 x = self._scaled_data[col].values.reshape(-1, 1)

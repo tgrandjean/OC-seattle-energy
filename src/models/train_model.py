@@ -58,10 +58,8 @@ class ModelTrainer(object):
             self.train_models()
 
         for model in self.trained_models:
-            scaler = self.processing_data.scalers[model_target[0]]
-            y_pred = scaler.inverse_transform(model.predict(X))
-            y_true = scaler.inverse_transform(y)
-            rmse = np.sqrt(metrics.mean_squared_error(y_true, y_pred))
+            y_pred = model.predict(X)
+            rmse = np.sqrt(metrics.mean_squared_error(y, y_pred))
             rmse_list.append(rmse)
             print(f"RMSE {model} : {rmse}")
 

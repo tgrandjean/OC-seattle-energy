@@ -7,7 +7,7 @@ from sklearn.linear_model import Ridge
 
 from src.models.model import AbstractModel
 
-ALPHAS = alpha=np.logspace(-3, 2, num=100)
+ALPHAS = alpha=np.logspace(-1, 3, num=100)
 
 
 class Model(AbstractModel):
