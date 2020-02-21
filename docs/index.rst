@@ -13,8 +13,7 @@ Contents:
 
    getting-started
    commands
-
-
+   code
 
 Indices and tables
 ==================
