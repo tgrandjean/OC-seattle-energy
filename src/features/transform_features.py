@@ -182,12 +182,42 @@ def save_features(data, path):
     data.to_pickle(path)
 
 
+def as_total_percentage(features):
+    """Return the GFA of the features as percentage of the total.
+
+    :args:
+        features (pd.DataFrame) : the transformed data from build_features
+    :return:
+        dataframe with one extra column containing the total GFA and values
+        as percentage of the total.
+    """
+    total = features.sum(axis=1)
+    features = features.div(total, axis=0)
+    features['TotalGFA'] = total
+    return features
+
+
+def pipeline(raw_data, as_percentage=False, target=TARGET):
+    dummies = make_dummies_dataframe(raw_data)
+    features = build_features(data, dummies)
+    # Drop empty columns
+    features.drop([x for x in features.columns if features[x].sum() == 0],
+                  axis=1, inplace=True)
+    if as_percentage:
+        features = as_total_percentage(features)
+        return pd.concat([features, data[target]], axis=1)
+    return pd.concat([features, data[target]], axis=1)
+
+
 if __name__ == '__main__':
     project_dir = Path(__file__).resolve().parents[2]
     data = load_data(project_dir.joinpath('data', 'interim',
                                           'full_data.pickle'))
-    dummies = make_dummies_dataframe(data)
-    features = build_features(data, dummies)
-    features = pd.concat([dummies, data[TARGET]], axis=1)
-    save_features(features, project_dir.joinpath('data', 'processed',
-                                                 'model_data.pickle'))
+    features = pipeline(data)
+    features_percent = pipeline(data, as_percentage=True)
+    features.dropna(subset=TARGET, inplace=True)
+    features_percent.dropna(subset=TARGET, inplace=True)
+    path_to_processed = project_dir.joinpath('data', 'processed')
+    save_features(features, path_to_processed.joinpath('model_data.pickle'))
+    save_features(features_percent,
+                  path_to_processed.joinpath('model_data_percent.pickle'))
