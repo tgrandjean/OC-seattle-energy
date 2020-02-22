@@ -36,6 +36,7 @@ def init_data_dir(project_dir):
     else:
         logger.info('already exists')
 
+
 def make_data(input_filepath):
     logger = logging.getLogger(__name__)
     logger.info('Making the dataset.')
