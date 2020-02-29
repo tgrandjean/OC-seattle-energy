@@ -4,6 +4,9 @@
 
 \section{Introduction}
 
+L'objectif de ce travail est de produire un modèle statistique permettant de prévoir
+les consommations des bâtiments ainsi que les rejets de gaz à effet de serre (GHG).
+
 
 %------------------------------------------------
 
@@ -60,23 +63,74 @@ un jeu unique contenant 47 variables et 6716 observations.
 On a donc les variables suivantes :
   voir table \ref{tab:table-variables}
 
-\begin{table}[]
+\begin{table}[H]
   \caption{liste des variables}
   \label{tab:table-variables}
 \input{./includes/variables.tex}
 \end{table}
 
 \subsection{Analyse des variables}
-Un rapport d'analyse exploratoire a été généré à l'aide de la bibliothèque pandas-profiling.
-Le rapport est disponible à l'adresse :
-\href{https://tgrandjean-oc-reports.s3.eu-west-3.amazonaws.com/seattle-energy/profiling_report.html}{AWS S3 bucket}
+
+\subsubsection{Analyses univariées}
+
+\subsubsection{Analyses bivariées}
+
+\subsubsection{Feature engineering}
+
+Les données sont ré-encodées différemment pour servir d'entrée au modèle
+
+
+
 %------------------------------------------------
 
 \section{Modèle}
 
+
 \subsection{Données d'entrée (input)}
 
+On utilise les données préalablement ré-encodées comme entrée du modèle.
+On a donc 65 variables d'entrée pour le modèle (64 usages type des surfaces ainsi
+que la surface totale.).
+
 \subsection{Données de sortie (output)}
+
+Dans un premier temps, on se focalise uniquement sur la consommation énergétique
+des bâtiments et non sur la production de GHG.
+
+\subsection{Sélection du modèle}
+
+Pour sélectionner un modèle, on entraîne successivement les modèles de
+régression suivant:
+\begin{itemize}
+  \item LinearRegression (Régression linéaire simple)
+  \item Régression linéaire avec régularisation.
+  \begin{itemize}
+    \item Ridge
+    \item Lasso
+    \item ElasticNet
+  \end{itemize}
+  \item Régression non linéaire.
+  \begin{itemize}
+    \item Support Vector Machine (support vector regression SVR)
+    \item Stochastic gradient descent (SGDRegressor)
+    \item Nearest neighbors (KNeighborsRegressor)
+    \item Arbres de décision (DecisionTreeRegressor)
+  \end{itemize}
+  \item Méthode d'ensemble
+  \begin{itemize}
+    \item RandomForestRegressor
+    \item GradientBoostingRegressor
+  \end{itemize}
+  \item Réseau de neurones artificiels: Multi layer perceptron (MLPRegressor)
+\end{itemize}
+
+On peut alors comparer les résultats obtenus sur ces modèles.
+Hormis la régression linéaire simple, l'ensemble des modèles utilisés comportent
+des hyperparamètres à optimiser.
+Pour une comparaison des modèles en bon et dû forme, il est possible d'optimiser
+les hyperparamètres de manière récursive et de comparer les modèles optimisés.\footnote{Certain modèle demande un temps calcul non négligeable et prennent donc
+du temps à entrainer, à ce stade, les modèles sont donc grossièrement optimisés
+pour comparaison.}
 
 \subsection{Algorithme utilisé}
 
