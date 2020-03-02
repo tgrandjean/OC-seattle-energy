@@ -23,3 +23,5 @@ sklearn
 ipywidgets
 pandas-profiling
 streamlit
+plotly
+sphinx_rtd_theme
