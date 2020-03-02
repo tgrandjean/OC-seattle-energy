@@ -5,12 +5,16 @@
 \section{Introduction}
 
 L'objectif de ce travail est de produire un modèle statistique permettant de prévoir
-les consommations des bâtiments ainsi que les rejets de gaz à effet de serre (GHG).
+les consommations des bâtiments ainsi que les rejets de gaz à effet de serre (GHG) sur
+base des informations du permis d'exploitation.
 
-
+Une analyse préliminaire des données ainsi que la sélection d'un modèle
+adapté sont ici détaillées.
 %------------------------------------------------
 
 \section{Données disponibles}
+
+les informations sur le set de donnée utilisé tout au long de ce travail sont exposés ici.
 
 \subsection{généralités}
 
@@ -26,7 +30,7 @@ Le jeu de données contient deux fichiers :
 Les deux jeux de données contiennent essentiellement les mêmes variables mais
 certaines (Par exemple : la localisation) sont encodées différemment.
 
-\subsection{Notes}
+\paragraph{Notes}
 
 Les seules différences notables entre les deux jeux de données sont:
 \begin{itemize}
@@ -63,13 +67,15 @@ un jeu unique contenant 47 variables et 6716 observations.
 On a donc les variables suivantes :
   voir table \ref{tab:table-variables}
 
-\begin{table}[H]
+\begin{table}[p]
   \caption{liste des variables}
   \label{tab:table-variables}
 \input{./includes/variables.tex}
 \end{table}
 
-\paragraph{Suppression des observations dont la consommation est nulle} On supprime toutes les lignes pour lesquelles la consommation du bâtiment est $\le$ 0. Cela concerne 103 lignes sur 6716 soit 1,53 \% des données.
+\paragraph{Suppression des observations dont la consommation est nulle}
+On supprime toutes les lignes pour lesquelles la consommation du bâtiment est $\le$ 0.
+Cela concerne 103 lignes sur 6716 soit 1,53 \% des données.
 
 
 \subsection{Analyse des variables}
@@ -121,6 +127,13 @@ On observe une corrélation entre les variables.
 
 \paragraph{Lien entre le type d'utilisation et la consommation}
 On peut regarder si le type d'utilisation des surfaces impact la consommation du bâtiment.
+On réalise donc une analyse de type "ANOVA" \cite{rutherford2001introducing}(analyse of variance) pour déterminer
+si l'usage (donnée catégorielle) impact la consommation (ici consommation au mètre carré\footnote{Les données provenant des US, les données sont exprimées dans les unités US (kBtu/sf)}). On peut ensuite poursuivre l'analyse par
+un test des paires HSD de Tukey \cite{abdi2020} (Pour déterminer quel type d'usage impact la moyenne.)
+
+On remarque alors qu'un grand nombre d'usage type n'ont pas d'impact sur la moyenne.
+
+
 \begin{figure*}
   \includegraphics[width=\linewidth]{ANOVA_1.png}
   \caption{}
@@ -151,11 +164,15 @@ Les données sont ré-encodées différemment pour servir d'entrée au modèle
 On utilise les données préalablement ré-encodées comme entrée du modèle.
 On a donc 65 variables d'entrée pour le modèle (64 usages type des surfaces ainsi
 que la surface totale.).
+Les 64 premières colonnes sont donc des flotants (float64) compris entre 0 et 1.
+La 65\up{ème} colonne contient les surfaces totale (TotalGFA) cette dernière
+subit une transformation logarithmique lors de l'entrainement du modèle.
 
 \subsection{Données de sortie (output)}
 
 Dans un premier temps, on se focalise uniquement sur la consommation énergétique
-des bâtiments et non sur la production de GHG.
+des bâtiments et non sur la production de GHG (Les GHG sont traités plus loin
+dans le document).
 
 \subsection{Sélection du modèle}
 
@@ -192,7 +209,9 @@ On peut alors comparer les résultats obtenus sur ces modèles.
 \end{table}
 
 Hormis la régression linéaire simple, l'ensemble des modèles utilisés comportent
-des hyperparamètres à optimiser.
+des hyperparamètres\footnote{On fait la distinction ici entre les paramètres
+qui sont optimisés au sein du modèle et les paramètres externe au modèles appelés
+hyperparamètres.} à optimiser.
 Pour une comparaison des modèles en bon et dû forme, il est possible d'optimiser
 les hyperparamètres de manière récursive et de comparer les modèles optimisés.
 \footnote{Certain modèle demande un temps calcul non négligeable et prennent donc
@@ -204,7 +223,27 @@ pour comparaison.}
   \caption{scores obtenus pour les modèles de régression}
   \label{}
 \end{figure}
+
 \subsection{Algorithme sélectionné}
+
+\subsubsection{RandomForestRegressor}
+
+\paragraph{Avantages} Meilleure généralisation
+(Le modèle donne des résultats très similaires sur les données d'entrainement et
+sur les donnnées de test. ).
+
+\paragraph{Points faibles}
+
+\subsubsection{DecisionTreeRegressor}
+
+\paragraph{Avantages}
+
+\paragraph{Points faibles}
+
+\subsubsection{Modèle retenu}
+
+
+
 
 \subsection{Entrainement du modèle}
 
