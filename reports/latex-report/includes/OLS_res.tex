@@ -1,5 +1,7 @@
 \begin{table*}[p]
 \centering
+\caption{Résultats de régression linéaire entre la surface total du bâtiment
+et la consommation.}
 \begin{tabular}{@{}llll@{}}
 \toprule
 \multicolumn{4}{c}{OLS Regression Results}                             \\ \midrule
@@ -16,16 +18,21 @@ Covariance Type:  & nonrobust        &                     &           \\ \botto
 \end{table*}
 
 \begin{table*}[p]
+  \caption{}
+
   \centering
 \begin{tabular}{@{}lllllll@{}}
 \toprule
-coef                  & std err   & t        & P\textgreater{}|t| & {[}0.025 & 0.975{]} &          \\ \midrule
+  & coef                  & std err   & t        & P\textgreater{}|t| & {[}0.025 & 0.975{]}         \\ \midrule
 Intercept             & 5.791e+04 & 1497.499 & 38.669             & 0.000    & 5.5e+04  & 6.08e+04 \\
 SiteEnergyUseWN\_kBtu & 0.0062    & 9.35e-05 & 66.432             & 0.000    & 0.006    & 0.006    \\ \bottomrule
 \end{tabular}
 \end{table*}
 
 \begin{table*}[p]
+  \caption{Résultats de régression linéaire entre le log de la surface total du bâtiment
+  et le log de la consommation.}
+
   \centering
 \begin{tabular}{@{}llll@{}}
 \toprule
@@ -43,10 +50,12 @@ Covariance Type:  & nonrobust           &                     &           \\ \bo
 \end{table*}
 
 \begin{table*}[p]
+  \caption{}
+
   \centering
 \begin{tabular}{@{}lllllll@{}}
 \toprule
-coef                     & std err & t     & P\textgreater{}|t| & {[}0.025 & 0.975{]} &       \\ \midrule
+  & coef                     & std err & t     & P\textgreater{}|t| & {[}0.025 & 0.975{]}        \\ \midrule
 Intercept                & 2.2812  & 0.084 & 27.228             & 0.000    & 2.117    & 2.445 \\
 logSiteEnergyUseWN\_kBtu & 0.5906  & 0.006 & 103.447            & 0.000    & 0.579    & 0.602 \\ \bottomrule
 \end{tabular}

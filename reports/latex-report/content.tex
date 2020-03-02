@@ -14,7 +14,8 @@ adapté sont ici détaillées.
 
 \section{Données disponibles}
 
-les informations sur le set de donnée utilisé tout au long de ce travail sont exposés ici.
+Dans cette section, vous trouverez toutes les informations sur le set de données
+utilisé tout au long de ce travail.
 
 \subsection{généralités}
 
@@ -27,12 +28,12 @@ Le jeu de données contient deux fichiers :
   \item{2016-building-energy-benchmarking.csv}
 \end{itemize}
 
-Les deux jeux de données contiennent essentiellement les mêmes variables mais
+Les deux fichiers contiennent essentiellement les mêmes variables mais
 certaines (Par exemple : la localisation) sont encodées différemment.
 
 \paragraph{Notes}
 
-Les seules différences notables entre les deux jeux de données sont:
+Les seules différences notables entre les deux fichiers sont:
 \begin{itemize}
   \item{Le jeu de 2016 contient 36 observations de plus que celui de 2015.}
   \item{Les données de 2016 n'ont pas la variable "OtherFuelUse"}
@@ -53,10 +54,6 @@ Les seules différences notables entre les deux jeux de données sont:
   \end{itemize}
 \end{itemize}
 
-%------------------------------------------------
-
-\section{Analyse exploratoire des données}
-
 \subsection{Travail préliminaire sur les données}
 
 Les deux jeux de données sont uniformisés au niveau des variables
@@ -76,7 +73,14 @@ On a donc les variables suivantes :
 \paragraph{Suppression des observations dont la consommation est nulle}
 On supprime toutes les lignes pour lesquelles la consommation du bâtiment est $\le$ 0.
 Cela concerne 103 lignes sur 6716 soit 1,53 \% des données.
+%------------------------------------------------
 
+\section{Analyse exploratoire des données}
+
+Dans cette section, vous trouverez les informations concernant les données en
+elles-mêmes. Pour ne pas surcharger inutilement ce document, seules les
+variables ayant un intérêt pour la suite sont traitées (Toutes les variables
+sont passées au crible dans le notebook \Verb+1.0-tg-initial-data-exploration.ipynb+).
 
 \subsection{Analyse des variables}
 
@@ -99,36 +103,62 @@ de GFA (gross floor area.)
 \end{figure}
 
 
-
 \subsubsection{Analyses bivariées}
 
 On cherche quelles sont les variables corrélées avec la consommation d'énergie
-du bâtiment.
+du bâtiment. Seules les variable ayant un lien avec la consommation d'énergie du
+bâtiment sont présentés ici. (Pour une analyse exhaustive, voir \Verb+1.0-tg-initial-data-exploration.ipynb+)
 
 \paragraph{Lien entre la surface du bâtiment et la consommation}
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \includegraphics[width=\linewidth]{bivar_gfa_energy.png}
   \caption{Régression linéaire entre la surface du bâtiment (TotalGFA) et la
   consommation}
-  \label{}
+  \label{reg_1}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \includegraphics[width=\linewidth]{bivar_gfa_energy_log.png}
   \caption{Régression linéaire entre la surface du bâtiment (TotalGFA) et la
   consommation avec passage en log}
-  \label{}
+  \label{reg_2}
 \end{figure}
 
-On observe une corrélation entre les variables.
+On observe une corrélation entre les variables. Il vient d'instinct que plus
+le bâtiment est grand plus il consomme. Cependant, on remarque que suivant l'usage
+l'usage des surfaces du bâtiment, la consommation peut être au-dessus ou en-dessous
+de la droite présente sur la figure (voir figure \ref{reg_1} \ref{reg_2}). Ce
+dernier point est mis en avant sur la figure \ref{reg_3}
 
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{reg_plot_color.png}
+  \caption{Relation entre la surface et la consommation. La couleur des points
+  est donnée par le Première usage du bâtiment. Il est fortement conseillé
+  de visualiser ce graphique sous forme interactive (voir notebook : \emph{2.0-features-selection.ipynb}}
+  \label{reg_3}
+\end{figure}
 \input{./includes/OLS_res.tex}
 
+De
 \paragraph{Lien entre le type d'utilisation et la consommation}
 On peut regarder si le type d'utilisation des surfaces impact la consommation du bâtiment.
-On réalise donc une analyse de type "ANOVA" \cite{rutherford2001introducing}(analyse of variance) pour déterminer
-si l'usage (donnée catégorielle) impact la consommation (ici consommation au mètre carré\footnote{Les données provenant des US, les données sont exprimées dans les unités US (kBtu/sf)}). On peut ensuite poursuivre l'analyse par
+On réalise donc une analyse de type "ANOVA" \cite{rutherford2001introducing}(analyse de variance) pour déterminer
+si l'usage (donnée catégorielle) impact la consommation (ici consommation au mètre carré\footnote{Les données provenant des US, les données sont exprimées dans les unités US (kBtu/sf)}).
+
+\begin{table*}[p]
+  \caption{Résulats analyse ANOVA}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+sum\_sq                   & df           & F      & PR(\textgreater{}F) &     \\ \midrule
+C(LargestUseType) & 5.371104e+17 & 56.0   & 64.957921           & 0.0 \\
+Residual                  & 9.531025e+17 & 6455.0 & NaN                 & NaN \\ \bottomrule
+\end{tabular}
+\end{table*}
+
+La probabilité
+
+On peut ensuite poursuivre l'analyse par
 un test des paires HSD de Tukey \cite{abdi2020} (Pour déterminer quel type d'usage impact la moyenne.)
 
 On remarque alors qu'un grand nombre d'usage type n'ont pas d'impact sur la moyenne.
@@ -136,7 +166,8 @@ On remarque alors qu'un grand nombre d'usage type n'ont pas d'impact sur la moye
 
 \begin{figure*}
   \includegraphics[width=\linewidth]{ANOVA_1.png}
-  \caption{}
+  \caption{Distribution des consommations normalisées par la surface du bâtiment,
+           en fonction du premier usage du bâtiment}
   \label{}
 \end{figure*}
 \begin{figure*}
@@ -146,13 +177,55 @@ On remarque alors qu'un grand nombre d'usage type n'ont pas d'impact sur la moye
 \end{figure*}
 
 
-
-
 \subsubsection{Feature engineering}
 
 Les données sont ré-encodées différemment pour servir d'entrée au modèle
 
+\paragraph{Baseline}
+On établit en premier lieu une valeur de référence sur les données originales (données provenant
+du fichier \Verb+interim/full_dataV2.pickle+).
+On utilise alors les colonnes:
+\begin{itemize}
+  \item PropertyGFATotal
+  \item LargestPropertyUseType
+  \item LargestPropertyUseTypeGFA
+  \item SecondLargestPropertyUseType
+  \item SecondLargestPropertyUseTypeGFA
+  \item ThirdLargestPropertyUseType
+  \item ThirdLargestPropertyUseTypeGFA
+\end{itemize}
+comme données d'entrées du modèle et la colonne SiteEnergyUseWN\_kBtu comme cible
+du modèle. Les données catégorielles sont encodées en format binaire (voir OneHotEncoding)
+et les données numériques (surface en sf) sont alors standardisée (StandardScaler).
+On entraine alors une régression linéaire simple (OLS) sur les données.
 
+\noindent Score on training set (2015) : 0.803732\newline
+Score on testing set (2016) : 0.694067
+
+\paragraph{Données réencodées}
+On calcul alors le gain ou la perte sur les données réencodées.
+Dans un premier temps, on transforme les données comme suit:
+\begin{enumerate}
+  \item OneHotEncoding des données catégorielles
+  \item Fusion des données binaires issues du OneHotEncoding
+  \item Remplacement des "1" par les valeurs de GFA associées.
+\end{enumerate}
+On a alors un tableau de données contenant 64 colonnes. (fichier \Verb+processed/model_data.pickle+)
+\noindent Score on training set : 0.354263\newline
+Score on testing set : 0.302856\newline
+
+
+Dans un second temps, on retransforme le set précédent de la manière suivante:
+\begin{enumerate}
+  \item On somme les surfaces ligne par ligne dans une colonne (TotalGFA)
+  \item On divise alors les cellules par la surface totale calculée précédement.
+  \item On obtient alors des données exprimées en pourcentage de la surface totale.
+\end{enumerate}
+On a alors un  tableau de données contenant 65 colonnes (64 usages type des surfaces ainsi
+que la surface totale.). (fichier \Verb+processed/model_data_percentV2.pickle+)
+
+\noindent Score on training set : 0.809332\newline
+Score on testing set : 0.749299
 
 %------------------------------------------------
 
