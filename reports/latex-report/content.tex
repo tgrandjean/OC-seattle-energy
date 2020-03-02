@@ -69,11 +69,71 @@ On a donc les variables suivantes :
 \input{./includes/variables.tex}
 \end{table}
 
+\paragraph{Suppression des observations dont la consommation est nulle} On supprime toutes les lignes pour lesquelles la consommation du bâtiment est $\le$ 0. Cela concerne 103 lignes sur 6716 soit 1,53 \% des données.
+
+
 \subsection{Analyse des variables}
 
 \subsubsection{Analyses univariées}
 
+\paragraph{Usage des surfaces} On peut regarder la répartission des différents
+usages de surfaces.
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{univar_primary_property_type.png}
+  \caption{Principaux usages des bâtiments}
+  \label{}
+\end{figure}
+
+\paragraph{Surface totale des bâtiments} On regarde la distribution des valeurs
+de GFA (gross floor area.)
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{univar_property_gfa_total.png}
+  \caption{Principaux usages des bâtiments}
+  \label{}
+\end{figure}
+
+
+
 \subsubsection{Analyses bivariées}
+
+On cherche quelles sont les variables corrélées avec la consommation d'énergie
+du bâtiment.
+
+\paragraph{Lien entre la surface du bâtiment et la consommation}
+
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{bivar_gfa_energy.png}
+  \caption{Régression linéaire entre la surface du bâtiment (TotalGFA) et la
+  consommation}
+  \label{}
+\end{figure}
+
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{bivar_gfa_energy_log.png}
+  \caption{Régression linéaire entre la surface du bâtiment (TotalGFA) et la
+  consommation avec passage en log}
+  \label{}
+\end{figure}
+
+On observe une corrélation entre les variables.
+
+\input{./includes/OLS_res.tex}
+
+\paragraph{Lien entre le type d'utilisation et la consommation}
+On peut regarder si le type d'utilisation des surfaces impact la consommation du bâtiment.
+\begin{figure*}
+  \includegraphics[width=\linewidth]{ANOVA_1.png}
+  \caption{}
+  \label{}
+\end{figure*}
+\begin{figure*}
+  \includegraphics[width=\linewidth]{TukeyHSD_1.png}
+  \caption{}
+  \label{}
+\end{figure*}
+
+
+
 
 \subsubsection{Feature engineering}
 
@@ -105,8 +165,8 @@ régression suivant:
   \item LinearRegression (Régression linéaire simple)
   \item Régression linéaire avec régularisation.
   \begin{itemize}
-    \item Ridge
-    \item Lasso
+    \item Ridge \cite{Marquardt1975}
+    \item Lasso \cite{tibshirani96regression}
     \item ElasticNet
   \end{itemize}
   \item Régression non linéaire.
@@ -121,18 +181,30 @@ régression suivant:
     \item RandomForestRegressor
     \item GradientBoostingRegressor
   \end{itemize}
-  \item Réseau de neurones artificiels: Multi layer perceptron (MLPRegressor)
+  \item Réseau de neurones artificiels: Multilayer perceptron (MLPRegressor)
 \end{itemize}
 
 On peut alors comparer les résultats obtenus sur ces modèles.
+\begin{table}[H]
+  \input{./includes/scores_1.tex}
+  \caption{Scores obtenus avec paramètres par défaut}
+  \label{}
+\end{table}
+
 Hormis la régression linéaire simple, l'ensemble des modèles utilisés comportent
 des hyperparamètres à optimiser.
 Pour une comparaison des modèles en bon et dû forme, il est possible d'optimiser
-les hyperparamètres de manière récursive et de comparer les modèles optimisés.\footnote{Certain modèle demande un temps calcul non négligeable et prennent donc
+les hyperparamètres de manière récursive et de comparer les modèles optimisés.
+\footnote{Certain modèle demande un temps calcul non négligeable et prennent donc
 du temps à entrainer, à ce stade, les modèles sont donc grossièrement optimisés
 pour comparaison.}
 
-\subsection{Algorithme utilisé}
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{models_scores.png}
+  \caption{scores obtenus pour les modèles de régression}
+  \label{}
+\end{figure}
+\subsection{Algorithme sélectionné}
 
 \subsection{Entrainement du modèle}
 

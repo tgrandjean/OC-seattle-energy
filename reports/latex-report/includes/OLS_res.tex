@@ -1,0 +1,53 @@
+\begin{table*}[p]
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+\multicolumn{4}{c}{OLS Regression Results}                             \\ \midrule
+Dep. Variable:    & PropertyGFATotal & R-squared:          & 0.244     \\
+Model:            & OLS              & Adj. R-squared:     & 0.244     \\
+Method:           & Least Squares    & F-statistic:        & 2166.     \\
+Date:             & Mon, 02 Mar 2020 & Prob (F-statistic): & 0.00      \\
+Time:             & 08:12:49         & Log-Likelihood:     & -89924.   \\
+No. Observations: & 6700             & AIC:                & 1.799e+05 \\
+Df Residuals:     & 6698             & BIC:                & 1.799e+05 \\
+Df Model:         & 1                &                     &           \\
+Covariance Type:  & nonrobust        &                     &           \\ \bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+  \centering
+\begin{tabular}{@{}lllllll@{}}
+\toprule
+coef                  & std err   & t        & P\textgreater{}|t| & {[}0.025 & 0.975{]} &          \\ \midrule
+Intercept             & 5.791e+04 & 1497.499 & 38.669             & 0.000    & 5.5e+04  & 6.08e+04 \\
+SiteEnergyUseWN\_kBtu & 0.0062    & 9.35e-05 & 66.432             & 0.000    & 0.006    & 0.006    \\ \bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+  \centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+\multicolumn{4}{c}{OLS Regression Results}                                \\ \midrule
+Dep. Variable:    & logPropertyGFATotal & R-squared:          & 0.622     \\
+Model:            & OLS                 & Adj. R-squared:     & 0.622     \\
+Method:           & Least Squares       & F-statistic:        & 1.070e+04 \\
+Date:             & Thu, 27 Feb 2020    & Prob (F-statistic): & 0.00      \\
+Time:             & 17:30:22            & Log-Likelihood:     & -5037.7   \\
+No. Observations: & 6512                & AIC:                & 1.008e+04 \\
+Df Residuals:     & 6510                & BIC:                & 1.009e+04 \\
+Df Model:         & 1                   &                     &           \\
+Covariance Type:  & nonrobust           &                     &           \\ \bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+  \centering
+\begin{tabular}{@{}lllllll@{}}
+\toprule
+coef                     & std err & t     & P\textgreater{}|t| & {[}0.025 & 0.975{]} &       \\ \midrule
+Intercept                & 2.2812  & 0.084 & 27.228             & 0.000    & 2.117    & 2.445 \\
+logSiteEnergyUseWN\_kBtu & 0.5906  & 0.006 & 103.447            & 0.000    & 0.579    & 0.602 \\ \bottomrule
+\end{tabular}
+\end{table*}
