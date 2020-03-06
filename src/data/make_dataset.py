@@ -6,9 +6,17 @@ from pathlib import Path
 from string import Template
 
 import click
-import kaggle
 import requests
 from tqdm import tqdm
+
+try:
+    import kaggle
+except OSError:
+    print("Kaggle API's credential required")
+    username = input("kaggle username : ")
+    key = getpass.getpass("kaggle API key")
+    os.environ['KAGGLE_USERNAME'] = username
+    os.environ['KAGGLE_KEY'] = key
 
 
 # Get data from Kaggle
@@ -106,12 +114,4 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     # load_dotenv(find_dotenv())
     init_data_dir(project_dir)
-    try:
-        main()
-    except OSError:
-        print("Kaggle API's credential required")
-        username = input("kaggle username : ")
-        key = getpass.getpass("kaggle API key")
-        os.environ['KAGGLE_USERNAME'] = username
-        os.environ['KAGGLE_KEY'] = key
-        main()
+    main()
