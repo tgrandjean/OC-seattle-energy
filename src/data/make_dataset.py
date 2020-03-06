@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import getpass
 import logging
 import os
 from pathlib import Path
@@ -10,7 +11,10 @@ import requests
 from tqdm import tqdm
 
 
+# Get data from Kaggle
 DATASET_NAME = 'city-of-seattle/sea-building-energy-benchmarking'
+
+# Get data from seattle's website
 BASE_URL = 'https://data.seattle.gov/api/views/$id/rows.csv?accessType=DOWNLOAD'
 
 SET_IDs = {
@@ -102,4 +106,12 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     # load_dotenv(find_dotenv())
     init_data_dir(project_dir)
-    main()
+    try:
+        main()
+    except OSError:
+        print("Kaggle API's credential required")
+        username = input("kaggle username : ")
+        key = getpass.getpass("kaggle API key")
+        os.environ['KAGGLE_USERNAME'] = username
+        os.environ['KAGGLE_KEY'] = key
+        main()
