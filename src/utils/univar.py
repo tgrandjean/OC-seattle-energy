@@ -9,8 +9,10 @@ import warnings
 
 from IPython.display import display, HTML
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
+from statsmodels.stats.stattools import medcouple
 from tabulate import tabulate
 
 
@@ -92,12 +94,21 @@ class UnivariateAnalysis(object):
             raise NotImplementedError('This feature will be available soon.')
 
     def outliers(self, column):
-        """Return outliers."""
+        """Return outliers.
+
+        make correction for skewed data. see :
+        Mia Hubert & al 2007 - Outlier detection for skewed data
+        """
         quartile_1 = self.data[column].quantile(0.25)
         quartile_3 = self.data[column].quantile(0.75)
         iqr = quartile_3 - quartile_1
-        lower_bound = quartile_1 - (iqr * 1.5)
-        upper_bound = quartile_3 + (iqr * 1.5)
+        mc = medcouple(self.data[column])
+        if mc > 0:
+            lower_bound = quartile_1 - (iqr * 1.5 * np.exp(-4 * mc))
+            upper_bound = quartile_3 + (iqr * 1.5 * np.exp(3 * mc))
+        else:
+            lower_bound = quartile_1 - (iqr * 1.5 * np.exp(-3 * mc))
+            upper_bound = quartile_3 + (iqr * 1.5 * np.exp(4 * mc))
         return self.data[(self.data[column] < lower_bound) |
                          (self.data[column] > upper_bound)]
 
