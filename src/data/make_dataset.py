@@ -8,7 +8,6 @@ from string import Template
 import click
 import requests
 from tqdm import tqdm
-
 try:
     import kaggle
 except OSError:
@@ -17,6 +16,7 @@ except OSError:
     key = getpass.getpass("kaggle API key")
     os.environ['KAGGLE_USERNAME'] = username
     os.environ['KAGGLE_KEY'] = key
+    import kaggle
 
 
 # Get data from Kaggle
