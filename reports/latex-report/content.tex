@@ -98,7 +98,7 @@ usages de surfaces.
 de GFA (gross floor area.)
 \begin{figure}[H]
   \includegraphics[width=\linewidth]{univar_property_gfa_total.png}
-  \caption{Principaux usages des bâtiments}
+  \caption{Distribution des valeurs "Surface du bâtiment"}
   \label{}
 \end{figure}
 
@@ -147,6 +147,7 @@ On réalise donc une analyse de type "ANOVA" \cite{rutherford2001introducing}(an
 si l'usage (donnée catégorielle) impact la consommation (ici consommation au mètre carré\footnote{Les données provenant des US, les données sont exprimées dans les unités US (kBtu/sf)}).
 
 \begin{table*}[p]
+  \centering
   \caption{Résulats analyse ANOVA}
 \begin{tabular}{@{}lllll@{}}
 \toprule
@@ -244,10 +245,11 @@ subit une transformation logarithmique lors de l'entrainement du modèle.
 \subsection{Données de sortie (output)}
 
 Dans un premier temps, on se focalise uniquement sur la consommation énergétique
-des bâtiments et non sur la production de GHG (Les GHG sont traités plus loin
+des bâtiments et non sur la production de GES (Les GES sont traités plus loin
 dans le document).
 
 \subsection{Sélection du modèle}
+La modélisation des données est réalisée à l'aide de la bibliothèque Python Scikit-Learn \cite{scikit-learn}
 
 Pour sélectionner un modèle, on entraîne successivement les modèles de
 régression suivant:
@@ -296,6 +298,19 @@ pour comparaison.}
   \caption{scores obtenus pour les modèles de régression}
   \label{}
 \end{figure}
+
+\begin{table}
+  \input{./includes/scores_2.tex}
+  \caption{Scores obtenus après une première optimisation des hyperparamètres}
+  \label{}
+
+\end{table}
+
+\begin{figure*}[p]
+  \includegraphics[width=\linewidth]{all_models_results_test.png}
+  \caption{Prédictions vs réalité -- données de test}
+  \label{}
+\end{figure*}
 
 \subsection{Algorithme sélectionné}
 
